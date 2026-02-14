@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIY - Sistema de Gestión</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>BIY - Entrenamiento, planes alimenticios y estilo de vida | 1% EVERYDAY</h1>
+</header>
+    
+<section>
+    {% block content %}{% endblock %}
+</section>
+
+<footer>
+    <p>Believe in Yourself @ 2021</p>
+</footer>
+
+</body>
+</html>
