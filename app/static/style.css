@@ -1,27 +1,41 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    background-image: url("/app/static/media/BIYBackground.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}
 
 header {
-    background-image: url("/app/static/media/BIYBackground.jpg");
-    color: #242424;
-    padding: 20px;
-    text-align: center;
+    background-color: #242424;
+    color: #ececec;
+    display: flex;
+    align-items: center;  
+    height: 120px;         
 }
 
+header .logo{
+    margin: 0;
+    height: 200px;
+    display: flex;
+}
+
+
+
+body {
+
+    font-family: Arial, sans-serif;
+    background-color: #ececec;
+    color: #242424;
+    margin: 0;
+    min-height: 100vh;
+}
+
+
 section {
+    background-color: #ececec;
+    color: #242424;
     padding: 40px;
+    min-height: 100vh;
 }
 
 footer {
-    background-image: url("/media/BIYBackground.jpg");
-    color: #242424;
+    background-color: #242424;
+    color: #ececec;
+    margin-top: auto;
     text-align: center;
     padding: 10px;
 }
