@@ -163,7 +163,7 @@ erDiagram
     USERS {
       int id PK
       string nombre
-      string email UNIQUE
+      string email
       string password_hash
       string role
       string estado
@@ -172,15 +172,15 @@ erDiagram
 
     DIETAS {
       int id PK
-      int user_id FK UNIQUE
-      text contenido
+      int user_id FK
+      string contenido
       datetime updated_at
     }
 
     ENTRENAMIENTOS {
       int id PK
-      int user_id FK UNIQUE
-      text contenido
+      int user_id FK
+      string contenido
       datetime updated_at
     }
 
@@ -198,7 +198,7 @@ erDiagram
     PROGRESOS {
       int id PK
       int user_id FK
-      text nota
+      string nota
       datetime created_at
     }
 ```
