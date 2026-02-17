@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="card form-card">
+    <h2>Iniciar sesion</h2>
+    <form method="post">
+        <label>Correo</label>
+        <input type="email" name="email" required>
+
+        <label>Contrasena</label>
+        <input type="password" name="password" required>
+
+        <button type="submit">Entrar</button>
+    </form>
+    <p class="hint">Admin inicial: admin@biy.local / admin123</p>
+</section>
+{% endblock %}

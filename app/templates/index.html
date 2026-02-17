@@ -1,58 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Bienvenido a BIY</h2>
-<p>Siendo 1% mejor todos los dias.</p>
-
-<h3>Crear cliente</h3>
-<form method="post" action="{{ url_for('clientes.crear_cliente') }}">
-    <input type="text" name="nombre" placeholder="Nombre" required>
-    <input type="text" name="telefono" placeholder="Telefono" required>
-    <input type="email" name="email" placeholder="Email (opcional)">
-    <button type="submit">Guardar</button>
-</form>
-
-{% if cliente_editar %}
-<h3>Editar cliente #{{ cliente_editar.id }}</h3>
-<form method="post" action="{{ url_for('clientes.actualizar_cliente', cliente_id=cliente_editar.id) }}">
-    <input type="text" name="nombre" value="{{ cliente_editar.nombre }}" required>
-    <input type="text" name="telefono" value="{{ cliente_editar.telefono }}" required>
-    <input type="email" name="email" value="{{ cliente_editar.email or '' }}">
-    <button type="submit">Actualizar</button>
-    <a href="{{ url_for('clientes.home') }}">Cancelar</a>
-</form>
-{% endif %}
-
-<h3>Listado de clientes</h3>
-{% if clientes %}
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Telefono</th>
-            <th>Email</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for cliente in clientes %}
-        <tr>
-            <td>{{ cliente.id }}</td>
-            <td>{{ cliente.nombre }}</td>
-            <td>{{ cliente.telefono }}</td>
-            <td>{{ cliente.email or '-' }}</td>
-            <td>
-                <a href="{{ url_for('clientes.editar_cliente_form', cliente_id=cliente.id) }}">Editar</a>
-                <form method="post" action="{{ url_for('clientes.eliminar_cliente', cliente_id=cliente.id) }}" style="display:inline;">
-                    <button type="submit">Eliminar</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>No hay clientes cargados todavia.</p>
-{% endif %}
+<section class="card">
+    <h1>BIY: nutricion, entrenamiento y progreso</h1>
+    <p>Registra tu usuario, activa tu plan tras el pago y accede a tu dieta, entrenamiento, medidas y avances.</p>
+    {% if g.user %}
+        {% if g.user.role == 'admin' %}
+            <a class="btn" href="{{ url_for('clientes.admin_panel') }}">Ir al panel admin</a>
+        {% else %}
+            <a class="btn" href="{{ url_for('clientes.cliente_panel') }}">Ir a mi panel</a>
+        {% endif %}
+    {% else %}
+        <div class="actions">
+            <a class="btn" href="{{ url_for('clientes.register') }}">Crear usuario</a>
+            <a class="btn secondary" href="{{ url_for('clientes.login') }}">Iniciar sesion</a>
+        </div>
+    {% endif %}
+</section>
 {% endblock %}

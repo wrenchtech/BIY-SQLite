@@ -1,26 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIY - Sistema de Gestión</title>
+    <title>BIY - Sistema de Gestion</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-
-<header>
-    <a href="http://127.0.0.1:5000">
-        <img src="/static/media/BIYAlt.png" alt="LogoBIYAlt" class="logo">
+<header class="topbar">
+    <a href="{{ url_for('clientes.home') }}">
+        <img src="{{ url_for('static', filename='media/BIYAlt.png') }}" alt="BIY Logo" class="logo">
     </a>
+    <nav>
+        <a href="{{ url_for('clientes.home') }}">Inicio</a>
+        {% if g.user %}
+            {% if g.user.role == 'admin' %}
+                <a href="{{ url_for('clientes.admin_panel') }}">Panel Admin</a>
+            {% else %}
+                <a href="{{ url_for('clientes.cliente_panel') }}">Mi Panel</a>
+            {% endif %}
+            <form method="post" action="{{ url_for('clientes.logout') }}" class="inline-form">
+                <button type="submit">Salir</button>
+            </form>
+        {% else %}
+            <a href="{{ url_for('clientes.login') }}">Iniciar sesion</a>
+            <a href="{{ url_for('clientes.register') }}">Crear usuario</a>
+        {% endif %}
+    </nav>
 </header>
-    
-<section>
+
+<main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-wrap">
+                {% for category, message in messages %}
+                    <div class="flash flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
     {% block content %}{% endblock %}
-</section>
+</main>
 
 <footer>
     <p>Believe in Yourself @ 2021</p>
 </footer>
-
 </body>
 </html>

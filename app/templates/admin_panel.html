@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="card">
+    <h2>Panel admin</h2>
+    <p>Gestion de clientes, dietas, entrenamientos, medidas y progreso.</p>
+</section>
+
+<section class="card">
+    <h3>Clientes registrados</h3>
+    {% if clientes %}
+        <table>
+            <thead><tr><th>ID</th><th>Nombre</th><th>Email</th><th>Estado</th><th>Alta</th><th>Accion</th></tr></thead>
+            <tbody>
+                {% for c in clientes %}
+                <tr>
+                    <td>{{ c.id }}</td>
+                    <td>{{ c.nombre }}</td>
+                    <td>{{ c.email }}</td>
+                    <td>{{ c.estado }}</td>
+                    <td>{{ c.created_at }}</td>
+                    <td><a href="{{ url_for('clientes.admin_cliente_detalle', cliente_id=c.id) }}">Administrar</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay clientes todavia.</p>
+    {% endif %}
+</section>
+{% endblock %}

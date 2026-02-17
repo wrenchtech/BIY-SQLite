@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="card">
+    <h2>Mi panel</h2>
+    <p><strong>Estado de cuenta:</strong> {{ g.user.estado }}</p>
+    {% if g.user.estado != 'activo' %}
+        <p>Tu cuenta esta pendiente. Al registrar pago se activa automaticamente.</p>
+        <form method="post" action="{{ url_for('clientes.cliente_pagar') }}">
+            <button type="submit">Simular pago y activar</button>
+        </form>
+        <p class="hint">Cuando tu estado sea activo podras ver dieta, entrenamiento, medidas y progreso.</p>
+    {% endif %}
+</section>
+
+{% if g.user.estado == 'activo' %}
+<section class="grid-2">
+    <article class="card">
+        <h3>Dieta</h3>
+        {% if dieta %}
+            <pre>{{ dieta.contenido }}</pre>
+            <p class="hint">Actualizada: {{ dieta.updated_at }}</p>
+        {% else %}
+            <p>Aun no hay dieta cargada por el admin.</p>
+        {% endif %}
+    </article>
+
+    <article class="card">
+        <h3>Entrenamiento</h3>
+        {% if entrenamiento %}
+            <pre>{{ entrenamiento.contenido }}</pre>
+            <p class="hint">Actualizado: {{ entrenamiento.updated_at }}</p>
+        {% else %}
+            <p>Aun no hay programa de entrenamiento cargado.</p>
+        {% endif %}
+    </article>
+</section>
+
+<section class="grid-2">
+    <article class="card form-card">
+        <h3>Subir medidas (cliente)</h3>
+        <form method="post" action="{{ url_for('clientes.cliente_subir_medidas') }}">
+            <label>Peso (kg)</label>
+            <input type="number" step="0.1" name="peso">
+
+            <label>Altura (cm)</label>
+            <input type="number" step="0.1" name="altura">
+
+            <label>Cintura (cm)</label>
+            <input type="number" step="0.1" name="cintura">
+
+            <label>% Grasa</label>
+            <input type="number" step="0.1" name="grasa">
+
+            <button type="submit">Guardar medidas</button>
+        </form>
+    </article>
+
+    <article class="card form-card">
+        <h3>Registrar progreso</h3>
+        <form method="post" action="{{ url_for('clientes.cliente_subir_medidas') }}">
+            <label>Nota de progreso</label>
+            <textarea name="nota" rows="5" placeholder="Ejemplo: mejor energia, cumpli 4/5 entrenos..."></textarea>
+            <button type="submit">Guardar progreso</button>
+        </form>
+    </article>
+</section>
+
+<section class="grid-2">
+    <article class="card">
+        <h3>Historial de medidas</h3>
+        {% if medidas %}
+            <table>
+                <thead><tr><th>Fecha</th><th>Peso</th><th>Altura</th><th>Cintura</th><th>Grasa</th><th>Fuente</th></tr></thead>
+                <tbody>
+                    {% for m in medidas %}
+                    <tr>
+                        <td>{{ m.fecha }}</td>
+                        <td>{{ m.peso or '-' }}</td>
+                        <td>{{ m.altura or '-' }}</td>
+                        <td>{{ m.cintura or '-' }}</td>
+                        <td>{{ m.grasa or '-' }}</td>
+                        <td>{{ m.fuente }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No hay medidas registradas.</p>
+        {% endif %}
+    </article>
+
+    <article class="card">
+        <h3>Progreso</h3>
+        {% if progresos %}
+            <ul>
+                {% for p in progresos %}
+                    <li><strong>{{ p.created_at }}</strong>: {{ p.nota }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No hay notas de progreso.</p>
+        {% endif %}
+    </article>
+</section>
+{% endif %}
+{% endblock %}
