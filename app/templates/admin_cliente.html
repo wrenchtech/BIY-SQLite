@@ -5,11 +5,29 @@
     <h2>Cliente #{{ cliente.id }} - {{ cliente.nombre }}</h2>
     <p><strong>Email:</strong> {{ cliente.email }}</p>
     <p><strong>Estado:</strong> {{ cliente.estado }}</p>
+    <form method="post" action="{{ url_for('clientes.admin_actualizar_cliente', cliente_id=cliente.id) }}">
+        <label>Nombre</label>
+        <input type="text" name="nombre" value="{{ cliente.nombre }}" required>
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ cliente.email }}" required>
+
+        <label>Estado</label>
+        <select name="estado">
+            <option value="pendiente" {% if cliente.estado == 'pendiente' %}selected{% endif %}>Pendiente</option>
+            <option value="activo" {% if cliente.estado == 'activo' %}selected{% endif %}>Activo</option>
+        </select>
+
+        <button type="submit">Actualizar cliente</button>
+    </form>
     {% if cliente.estado != 'activo' %}
     <form method="post" action="{{ url_for('clientes.admin_activar_cliente', cliente_id=cliente.id) }}">
         <button type="submit">Activar cliente</button>
     </form>
     {% endif %}
+    <form method="post" action="{{ url_for('clientes.admin_eliminar_cliente', cliente_id=cliente.id) }}">
+        <button type="submit">Eliminar cliente</button>
+    </form>
 </section>
 
 <section class="grid-2">

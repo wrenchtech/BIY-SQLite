@@ -6,6 +6,28 @@
     <p>Gestion de clientes, dietas, entrenamientos, medidas y progreso.</p>
 </section>
 
+<section class="card form-card">
+    <h3>Crear cliente</h3>
+    <form method="post" action="{{ url_for('clientes.admin_crear_cliente') }}">
+        <label>Nombre</label>
+        <input type="text" name="nombre" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Contrasena inicial</label>
+        <input type="password" name="password" required>
+
+        <label>Estado</label>
+        <select name="estado">
+            <option value="pendiente">Pendiente</option>
+            <option value="activo">Activo</option>
+        </select>
+
+        <button type="submit">Crear cliente</button>
+    </form>
+</section>
+
 <section class="card">
     <h3>Clientes registrados</h3>
     {% if clientes %}

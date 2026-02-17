@@ -228,6 +228,38 @@ def admin_panel():
     return render_template("admin_panel.html", clientes=clientes)
 
 
+@clientes_bp.post("/admin/clientes/crear")
+@role_required("admin")
+def admin_crear_cliente():
+    nombre = request.form.get("nombre", "").strip()
+    email = request.form.get("email", "").strip().lower()
+    password = request.form.get("password", "")
+    estado = request.form.get("estado", "pendiente").strip().lower()
+    if estado not in {"pendiente", "activo"}:
+        estado = "pendiente"
+
+    if not nombre or not email or not password:
+        flash("Completa nombre, email y contrasena.", "error")
+        return redirect(url_for("clientes.admin_panel"))
+
+    db = current_app.get_db()
+    exists = db.execute("SELECT id FROM users WHERE email = ?", (email,)).fetchone()
+    if exists:
+        flash("Ese correo ya existe.", "error")
+        return redirect(url_for("clientes.admin_panel"))
+
+    db.execute(
+        """
+        INSERT INTO users (nombre, email, password_hash, role, estado)
+        VALUES (?, ?, ?, 'cliente', ?)
+        """,
+        (nombre, email, generate_password_hash(password), estado),
+    )
+    db.commit()
+    flash("Cliente creado.", "success")
+    return redirect(url_for("clientes.admin_panel"))
+
+
 @clientes_bp.get("/admin/clientes/<int:cliente_id>")
 @role_required("admin")
 def admin_cliente_detalle(cliente_id):
@@ -279,6 +311,48 @@ def admin_cliente_detalle(cliente_id):
     )
 
 
+@clientes_bp.post("/admin/clientes/<int:cliente_id>/actualizar")
+@role_required("admin")
+def admin_actualizar_cliente(cliente_id):
+    nombre = request.form.get("nombre", "").strip()
+    email = request.form.get("email", "").strip().lower()
+    estado = request.form.get("estado", "pendiente").strip().lower()
+    if estado not in {"pendiente", "activo"}:
+        estado = "pendiente"
+
+    if not nombre or not email:
+        flash("Nombre y email son obligatorios.", "error")
+        return redirect(url_for("clientes.admin_cliente_detalle", cliente_id=cliente_id))
+
+    db = current_app.get_db()
+    cliente = db.execute(
+        "SELECT id FROM users WHERE id = ? AND role = 'cliente'",
+        (cliente_id,),
+    ).fetchone()
+    if cliente is None:
+        abort(404)
+
+    email_taken = db.execute(
+        "SELECT id FROM users WHERE email = ? AND id != ?",
+        (email, cliente_id),
+    ).fetchone()
+    if email_taken:
+        flash("El email ya esta en uso por otro usuario.", "error")
+        return redirect(url_for("clientes.admin_cliente_detalle", cliente_id=cliente_id))
+
+    db.execute(
+        """
+        UPDATE users
+        SET nombre = ?, email = ?, estado = ?
+        WHERE id = ? AND role = 'cliente'
+        """,
+        (nombre, email, estado, cliente_id),
+    )
+    db.commit()
+    flash("Cliente actualizado.", "success")
+    return redirect(url_for("clientes.admin_cliente_detalle", cliente_id=cliente_id))
+
+
 @clientes_bp.post("/admin/clientes/<int:cliente_id>/activar")
 @role_required("admin")
 def admin_activar_cliente(cliente_id):
@@ -290,6 +364,19 @@ def admin_activar_cliente(cliente_id):
     db.commit()
     flash("Cliente activado.", "success")
     return redirect(url_for("clientes.admin_cliente_detalle", cliente_id=cliente_id))
+
+
+@clientes_bp.post("/admin/clientes/<int:cliente_id>/eliminar")
+@role_required("admin")
+def admin_eliminar_cliente(cliente_id):
+    db = current_app.get_db()
+    db.execute(
+        "DELETE FROM users WHERE id = ? AND role = 'cliente'",
+        (cliente_id,),
+    )
+    db.commit()
+    flash("Cliente eliminado.", "success")
+    return redirect(url_for("clientes.admin_panel"))
 
 
 @clientes_bp.post("/admin/clientes/<int:cliente_id>/dieta")

@@ -81,12 +81,14 @@ label {
 
 input,
 textarea,
+select,
 button {
     font: inherit;
 }
 
 input,
-textarea {
+textarea,
+select {
     width: 100%;
     padding: 10px;
     border: 1px solid var(--line);
@@ -96,6 +98,7 @@ textarea {
 
 button,
 .btn {
+    margin: 10px;
     display: inline-block;
     border: none;
     border-radius: 8px;
